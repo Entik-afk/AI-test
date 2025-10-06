@@ -12,12 +12,19 @@ client = OpenAI(api_key=api_key)
 
 def ask(prompt, history):
     history.append({"role": "user", "content": prompt})
+
+    
+    if len(history) > 10:
+        history = history[:1] + history[-9:]  # Zachová první (system) + posledních 9 zpráv  
+
     completion = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=history,
         max_tokens=200,
         temperature=0.7,
     )
+
+
 
     text = completion.choices[0].message.content
     history.append({"role": "assistant", "content": text})
@@ -32,7 +39,7 @@ history = [
 while True:
     prompt = input("You: ")
     if prompt.lower() == "exit":
-        break
+        breakexit
 
     response, history = ask(prompt, history)
     print("Bot:", response)    
